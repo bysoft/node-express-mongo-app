@@ -25,23 +25,24 @@ app.configure(function(){
 });
 
 app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
 app.configure('production', function(){
-  app.use(express.errorHandler()); 
+  app.use(express.errorHandler());
 });
 
 // Routes
+
+var server = new Mongolian
+var db = server.db("test")
+var posts = db.collection('posts')
 
 app.get('/', routes.index);
 
 app.get('/save/:left/:topV/:elemId', function(req, res){
     res.send('datasaved <p />left:' + req.params.left + '<br/>top:' + req.params.topV)
     $("<h1>test passes</h1>").appendTo("body");
-    var server = new Mongolian
-    var db = server.db("test")
-    var posts = db.collection("posts")
     var comments = db.collection("comments")
 	posts.save({_id: req.params.elemId,left: req.params.left,top: req.params.topV})
 	res.render('update',{item:req.params.elemId, left:req.params.left, top:req.params.top})
@@ -50,25 +51,22 @@ app.get('/save/:left/:topV/:elemId', function(req, res){
 
 
 app.get('/load/:loadId', function(req,res){
-    var server = new Mongolian
-    var db = server.db("test")
-    var posts = db.collection('posts')    
-    var totalRecords = req.params.loadId
-	var totalRecords = parseInt(totalRecords) -1	
+  var totalRecords = req.params.loadId
+	var totalRecords = parseInt(totalRecords) -1
 	posts.find().skip(totalRecords).limit(1).forEach(function(post){
         var leftVal = post.left
         var topVal = post.top
-//		res.render('load', {left: leftVal, top:topVal})	       		
-		res.json({left: leftVal, top:topVal})	       		
+//		res.render('load', {left: leftVal, top:topVal})
+		res.json({left: leftVal, top:topVal})
 	})
 /*
     posts.find().skip(totalRecords).forEach(function(post){
 	        var leftVal = post.left
         var topVal = post.top
-	res.render('load', {left: leftVal, top:topVal})	       	
-    }, function(err){    	
+	res.render('load', {left: leftVal, top:topVal})
+    }, function(err){
     	if (err.length){
-		    console.log('error finding db records')	  
+		    console.log('error finding db records')
     	}
     })
 */
@@ -76,5 +74,5 @@ app.get('/load/:loadId', function(req,res){
 
 
 
-app.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT || 5000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
